@@ -1,0 +1,129 @@
+// Prisma schema for Freecord database
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  clerkId   String   @unique
+  name      String
+  email     String   @unique
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  servers    ServerMember[]
+  messages   Message[]
+  createdChannels Channel[]
+  voiceChannelSessions VoiceChannelParticipant[]
+
+  @@map("users")
+}
+
+model Server {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  avatar      String?
+  inviteCode  String   @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members  ServerMember[]
+  channels Channel[]
+
+  @@map("servers")
+}
+
+model ServerMember {
+  id   String     @id @default(cuid())
+  role MemberRole @default(GUEST)
+
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serverId String
+  server   Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([serverId])
+  @@map("server_members")
+}
+
+model Channel {
+  id        String      @id @default(cuid())
+  name      String
+  type      ChannelType @default(TEXT)
+  
+  serverId  String
+  server    Server @relation(fields: [serverId], references: [id], onDelete: Cascade)
+  
+  createdById String?
+  createdBy   User?   @relation(fields: [createdById], references: [id])
+  
+  messages  Message[]
+  voiceParticipants VoiceChannelParticipant[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serverId])
+  @@map("channels")
+}
+
+model Message {
+  id      String  @id @default(cuid())
+  content String
+  fileUrl String?
+
+  channelId String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  deleted Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([channelId])
+  @@index([userId])
+  @@map("messages")
+}
+
+enum ChannelType {
+  TEXT
+  VOICE
+  VIDEO
+}
+
+enum MemberRole {
+  ADMIN
+  MODERATOR
+  GUEST
+}
+
+model VoiceChannelParticipant {
+  id        String   @id @default(cuid())
+  joinedAt  DateTime @default(now())
+  lastSeen  DateTime @default(now())
+  isMuted   Boolean  @default(false)
+  isDeafened Boolean @default(false)
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  channelId String
+  channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, channelId])
+  @@map("voice_channel_participants")
+}
