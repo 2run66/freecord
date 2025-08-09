@@ -1,10 +1,10 @@
 "use client";
 
 import { Plus, Compass } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useModal } from "@/hooks/use-modal-store";
 import { Separator } from "@/components/ui/separator";
 import { useRouter } from "next/navigation";
+import ServerSidebarButton from "@/components/ui/server-sidebar-button";
 
 interface Server {
   id: string;
@@ -29,13 +29,13 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
     <div className="w-[72px] bg-zinc-900 flex flex-col items-center py-3 space-y-2">
       {/* Freecord Home */}
       <div className="relative">
-        <div 
+        <ServerSidebarButton
+          label="Home"
           onClick={() => router.push("/")}
-          className="w-12 h-12 rounded-full bg-primary hover:bg-primary/90 flex items-center justify-center text-primary-foreground font-bold text-lg cursor-pointer transition-all duration-200 hover:rounded-2xl shadow-lg"
-          title="Home"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg hover:rounded-2xl shadow-lg"
         >
           F
-        </div>
+        </ServerSidebarButton>
       </div>
       
       {/* Separator */}
@@ -50,18 +50,18 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
             {isActive && (
               <div className="absolute -left-3 top-1/2 transform -translate-y-1/2 w-1 h-8 bg-white rounded-r-full" />
             )}
-            <div
+            <ServerSidebarButton
+              label={server.name}
               onClick={() => handleServerClick(server.id)}
-              className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold cursor-pointer transition-all duration-200 ${
-                isActive 
-                  ? "bg-primary text-primary-foreground rounded-2xl shadow-lg ring-2 ring-primary/50" 
+              className={`font-semibold ${
+                isActive
+                  ? "bg-primary text-primary-foreground rounded-2xl shadow-lg ring-2 ring-primary/50"
                   : "bg-zinc-700 hover:bg-zinc-600 text-zinc-300 hover:rounded-2xl hover:bg-primary/20"
               }`}
-              title={server.name}
             >
               {server.avatar ? (
-                <img 
-                  src={server.avatar} 
+                <img
+                  src={server.avatar}
                   alt={server.name}
                   className={`w-full h-full object-cover transition-all duration-200 ${
                     isActive ? "rounded-2xl" : "rounded-full hover:rounded-2xl"
@@ -70,34 +70,37 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
               ) : (
                 server.name.substring(0, 2).toUpperCase()
               )}
-            </div>
+            </ServerSidebarButton>
           </div>
         );
       })}
       
       {/* Add Server */}
-      <div 
+      <ServerSidebarButton
+        label="Create Server"
         onClick={() => onOpen("createServer")}
-        className="w-12 h-12 rounded-full bg-zinc-700 hover:bg-green-600 flex items-center justify-center text-green-500 hover:text-white font-bold text-2xl cursor-pointer transition-all duration-200 hover:rounded-2xl"
+        className="bg-zinc-700 hover:bg-green-600 text-green-500 hover:text-white font-bold text-2xl hover:rounded-2xl"
       >
         <Plus className="w-6 h-6" />
-      </div>
+      </ServerSidebarButton>
 
       {/* Discover Servers */}
-      <div 
+      <ServerSidebarButton
+        label="Discover Servers"
         onClick={() => onOpen("serverDiscovery")}
-        className="w-12 h-12 rounded-full bg-zinc-700 hover:bg-blue-600 flex items-center justify-center text-blue-500 hover:text-white cursor-pointer transition-all duration-200 hover:rounded-2xl"
+        className="bg-zinc-700 hover:bg-blue-600 text-blue-500 hover:text-white hover:rounded-2xl"
       >
         <Compass className="w-5 h-5" />
-      </div>
+      </ServerSidebarButton>
 
       {/* Join Server */}
-      <div 
+      <ServerSidebarButton
+        label="Join Server"
         onClick={() => onOpen("joinServer")}
-        className="w-12 h-12 rounded-full bg-zinc-700 hover:bg-purple-600 flex items-center justify-center text-purple-500 hover:text-white cursor-pointer transition-all duration-200 hover:rounded-2xl text-xl font-bold"
+        className="bg-zinc-700 hover:bg-purple-600 text-purple-500 hover:text-white hover:rounded-2xl text-xl font-bold"
       >
         +
-      </div>
+      </ServerSidebarButton>
     </div>
   );
 };
