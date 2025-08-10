@@ -22,19 +22,31 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
   const { onOpen } = useModal();
   const router = useRouter();
   const [friendCount, setFriendCount] = useState<number>(0);
+  const [notificationCount, setNotificationCount] = useState<number>(0);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
 
   useEffect(() => {
-    // Lightweight fetch of friend count
+    // Lightweight fetch of friend and notification counts
     (async () => {
       try {
-        const res = await fetch("/api/friends");
-        if (res.ok) {
-          const friends = await res.json();
+        const [friendsRes, requestsRes] = await Promise.all([
+          fetch("/api/friends"),
+          fetch("/api/friends/requests"),
+        ]);
+
+        if (friendsRes.ok) {
+          const friends = await friendsRes.json();
           setFriendCount(Array.isArray(friends) ? friends.length : 0);
+        }
+
+        if (requestsRes.ok) {
+          const data = await requestsRes.json();
+          const incoming = Array.isArray(data?.incoming) ? data.incoming : [];
+          setNotificationCount(incoming.length);
         }
       } catch {
         setFriendCount(0);
+        setNotificationCount(0);
       }
     })();
   }, []);
@@ -45,7 +57,7 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
 
   return (
     <div
-      className={`relative bg-zinc-900 flex flex-col items-center py-3 space-y-2 transition-[width] duration-200 overflow-visible z-0 ${
+      className={`relative bg-black flex flex-col items-center py-3 space-y-2 transition-[width] duration-200 overflow-visible z-0 ${
         isCollapsed ? "w-8" : "w-[72px]"
       }`}
     >
@@ -67,15 +79,13 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
         <div className="flex-1" />
       ) : (
         <>
-          {/* Freecord Home */}
-          <div className="relative">
-            <ServerSidebarButton
-              label="Home"
-              onClick={() => router.push("/")}
-              className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-lg hover:rounded-2xl shadow-lg"
-            >
-              F
-            </ServerSidebarButton>
+          {/* Freecord Home (pure PNG logo) */}
+          <div className="w-12 h-12 flex items-center justify-center cursor-pointer" onClick={() => router.push("/")}>
+            <img
+              src="/main-logo.png"
+              alt="Home"
+              className="w-12 h-12 object-contain"
+            />
           </div>
           
           {/* Separator */}
@@ -86,7 +96,7 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
             <ServerSidebarButton
               label="Friends"
               onClick={() => onOpen("friends")}
-              className="bg-zinc-700 hover:bg-zinc-600 text-zinc-300 hover:text-white hover:rounded-2xl"
+              className="bg-zinc-700 hover:bg-yellow-500 text-yellow-400 hover:text-white hover:rounded-2xl"
               badgeCount={friendCount}
             >
               <Users className="w-5 h-5" />
@@ -94,7 +104,8 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
             <ServerSidebarButton
               label="Notifications"
               onClick={() => onOpen("notifications")}
-              className="bg-zinc-700 hover:bg-zinc-600 text-zinc-300 hover:text-white hover:rounded-2xl"
+              className="bg-zinc-700 hover:bg-orange-500 text-orange-400 hover:text-white hover:rounded-2xl"
+              badgeCount={notificationCount}
             >
               <Bell className="w-5 h-5" />
             </ServerSidebarButton>

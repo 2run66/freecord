@@ -25,7 +25,7 @@ export function ServerSidebarButton({ label, onClick, className, children, badge
         >
           {children}
           {!!badgeCount && badgeCount > 0 && (
-            <span className="absolute -bottom-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-indigo-500 text-white text-[10px] leading-[18px] text-center shadow">
+            <span className="absolute -bottom-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-yellow-400 text-black text-[10px] leading-[18px] text-center shadow ring-1 ring-yellow-300">
               {badgeCount > 99 ? '99+' : badgeCount}
             </span>
           )}

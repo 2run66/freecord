@@ -79,38 +79,53 @@
 }
 
 .dark {
-  /* Discord-inspired dark theme colors */
-  --background: #36393f; /* Discord dark background */
-  --foreground: #dcddde; /* Discord light text */
-  --card: #2f3136; /* Discord card background */
-  --card-foreground: #dcddde;
-  --popover: #2f3136;
-  --popover-foreground: #dcddde;
-  --primary: #5865f2; /* Discord blurple */
-  --primary-foreground: #ffffff;
-  --secondary: #4f545c; /* Discord secondary */
-  --secondary-foreground: #dcddde;
-  --muted: #40444b; /* Discord muted */
-  --muted-foreground: #72767d; /* Discord muted text */
-  --accent: #5865f2; /* Discord accent */
+  /* GitHub Dark (default) theme mapping */
+  /* Base surfaces */
+  --background: #0d1117; /* canvas.default */
+  --foreground: #c9d1d9; /* fg.default */
+  --card: #161b22; /* canvas.overlay */
+  --card-foreground: #c9d1d9;
+  --popover: #161b22; /* canvas.overlay */
+  --popover-foreground: #c9d1d9;
+
+  /* Primary/brand (use accent emphasis for solid buttons) */
+  --primary: #1f6feb; /* accent.emphasis */
+  --primary-foreground: #ffffff; /* fg.onEmphasis */
+
+  /* Secondary/muted surfaces */
+  --secondary: #161b22; /* subtle surface */
+  --secondary-foreground: #c9d1d9;
+  --muted: #161b22; /* subtle surface */
+  --muted-foreground: #8b949e; /* fg.muted */
+
+  /* Accent (links, subtle accents) */
+  --accent: #2f81f7; /* accent.fg */
   --accent-foreground: #ffffff;
-  --destructive: #ed4245; /* Discord red */
-  --border: #202225; /* Discord border */
-  --input: #40444b; /* Discord input background */
-  --ring: #5865f2;
-  --chart-1: #5865f2;
-  --chart-2: #57f287; /* Discord green */
-  --chart-3: #fee75c; /* Discord yellow */
-  --chart-4: #eb459e; /* Discord pink */
-  --chart-5: #ed4245; /* Discord red */
-  --sidebar: #2f3136; /* Discord sidebar */
-  --sidebar-foreground: #dcddde;
-  --sidebar-primary: #5865f2;
+
+  /* Semantic */
+  --destructive: #da3633; /* danger.emphasis */
+
+  /* Borders/inputs/focus */
+  --border: #30363d; /* border.default */
+  --input: #30363d; /* match border for inputs */
+  --ring: #1f6feb; /* focus ring to brand */
+
+  /* Charts (choose from Primer accent set) */
+  --chart-1: #2f81f7; /* blue */
+  --chart-2: #3fb950; /* green */
+  --chart-3: #d29922; /* yellow/orange */
+  --chart-4: #a371f7; /* purple */
+  --chart-5: #f85149; /* red */
+
+  /* Sidebar */
+  --sidebar: #0d1117; /* main canvas */
+  --sidebar-foreground: #c9d1d9;
+  --sidebar-primary: #1f6feb;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #40444b;
-  --sidebar-accent-foreground: #dcddde;
-  --sidebar-border: #202225;
-  --sidebar-ring: #5865f2;
+  --sidebar-accent: #161b22; /* subtle surface */
+  --sidebar-accent-foreground: #c9d1d9;
+  --sidebar-border: #30363d;
+  --sidebar-ring: #1f6feb;
 }
 
 @layer base {
@@ -122,37 +137,37 @@
   }
 }
 
-/* Discord-like scrollbars */
+/* Scrollbars tuned for GitHub Dark */
 ::-webkit-scrollbar {
   width: 14px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #2f3136;
+  background: #0d1117;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #202225;
+  background: #30363d;
   border-radius: 8px;
-  border: 3px solid #2f3136;
+  border: 3px solid #0d1117;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #1a1d21;
+  background: #3d444d;
 }
 
 /* Custom Discord-like components */
 .discord-sidebar {
-  background: #2f3136;
-  border-right: 1px solid #202225;
+  background: #0d1117;
+  border-right: 1px solid #30363d;
 }
 
 .discord-channel-list {
-  background: #2f3136;
+  background: #0d1117;
 }
 
 .discord-chat {
-  background: #36393f;
+  background: #0d1117;
 }
 
 .discord-message {
@@ -161,12 +176,12 @@
 }
 
 .discord-message:hover {
-  background: rgba(4, 4, 5, 0.07);
+  background: rgba(110, 118, 129, 0.12); /* subtle hover */
 }
 
 .discord-input {
-  background: #40444b;
-  border: none;
+  background: #161b22;
+  border: 1px solid #30363d;
   border-radius: 8px;
 }
 

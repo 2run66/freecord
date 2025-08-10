@@ -191,7 +191,7 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
         </div>
 
         {/* User Panel */}
-        <div className="h-14 bg-zinc-800 border-t border-border flex items-center px-2 justify-between">
+        <div className="h-14 bg-muted/60 backdrop-blur supports-[backdrop-filter]:bg-muted/50 border-t border-border flex items-center px-2 justify-between">
           <div className="flex items-center flex-1 min-w-0">
             <UserAvatar
               src={profile.avatar || undefined}
@@ -206,6 +206,7 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
             </div>
           </div>
           <div className="flex space-x-1">
+            {/*
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -228,6 +229,7 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
+            */}
             
             <TooltipProvider>
               <Tooltip>
@@ -279,7 +281,7 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col">
         {/* Chat Header */}
-        <div className="h-12 border-b border-border flex items-center px-4 bg-background shadow-sm">
+        <div className="h-12 border-b border-border flex items-center px-4 bg-card/60 backdrop-blur supports-[backdrop-filter]:bg-card/50">
           {channel.type === "TEXT" && <Hash className="w-6 h-6 text-muted-foreground mr-2" />}
           {channel.type === "VOICE" && <Volume2 className="w-6 h-6 text-muted-foreground mr-2" />}
           {channel.type === "VIDEO" && <Volume2 className="w-6 h-6 text-muted-foreground mr-2" />}
@@ -292,7 +294,7 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
             </div>
           )}
           <div className="ml-auto flex items-center space-x-2">
-            <Button size="sm" variant="ghost" className="hover:bg-muted">
+            <Button size="sm" variant="ghost" className="hover:bg-muted/70">
               <UserPlus className="w-4 h-4" />
             </Button>
           </div>

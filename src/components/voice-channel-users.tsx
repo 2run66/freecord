@@ -88,15 +88,15 @@ export const VoiceChannelUsers = ({ channelId, className }: VoiceChannelUsersPro
   const getVolumeIndicator = (participant: VoiceParticipant) => {
     const volume = getParticipantVolume(participant.sid);
     if (volume === 0) {
-      return { icon: VolumeX, color: "text-red-500", tooltip: "Muted" };
+      return { icon: VolumeX, color: "text-red-500", tooltip: "Muted", volume };
     } else if (volume < 50) {
-      return { icon: Volume2, color: "text-yellow-500", tooltip: `${volume}% (Quiet)` };
+      return { icon: Volume2, color: "text-yellow-500", tooltip: `${volume}% (Quiet)`, volume };
     } else if (volume > 150) {
-      return { icon: Volume2, color: "text-orange-500", tooltip: `${volume}% (Loud)` };
+      return { icon: Volume2, color: "text-orange-500", tooltip: `${volume}% (Loud)`, volume };
     } else if (volume !== 100) {
-      return { icon: Volume2, color: "text-blue-500", tooltip: `${volume}%` };
+      return { icon: Volume2, color: "text-blue-500", tooltip: `${volume}%`, volume };
     }
-    return { icon: Volume2, color: "text-green-500", tooltip: "100% (Normal)" };
+    return { icon: Volume2, color: "text-green-500", tooltip: "100% (Normal)", volume };
   };
 
   return (
@@ -105,37 +105,45 @@ export const VoiceChannelUsers = ({ channelId, className }: VoiceChannelUsersPro
         const volumeInfo = getVolumeIndicator(participant);
         const VolumeIcon = volumeInfo.icon;
         
+        const isMuted = volumeInfo.volume === 0;
+        const isSpeaking = volumeInfo.volume > 120;
+        const ringClass = isMuted
+          ? "ring-2 ring-red-500/60"
+          : isSpeaking
+            ? "ring-2 ring-accent/60"
+            : "ring-1 ring-border/70";
+
         return (
           <TooltipProvider key={participant.sid}>
             <Tooltip>
               <TooltipTrigger asChild>
-                <div 
-                  className="flex items-center gap-2 text-sm text-muted-foreground px-2 py-1 rounded hover:bg-muted/50 cursor-pointer group transition-colors"
+                <div
+                  className="group flex items-center gap-2 text-sm px-2.5 py-1.5 rounded-md border border-transparent hover:border-border hover:bg-muted cursor-pointer transition-colors"
                   onClick={() => handleParticipantClick(participant)}
                 >
-                  <UserAvatar 
-                    src={participant.avatar} 
-                    name={participant.name} 
-                    className="h-5 w-5" 
+                  <UserAvatar
+                    src={participant.avatar}
+                    name={participant.name}
+                    className={cn("h-6 w-6 rounded-full", ringClass)}
                   />
-                  <span className="truncate flex-1 group-hover:text-foreground">
+                  <span className="truncate flex-1 text-muted-foreground group-hover:text-foreground">
                     {participant.name}
                   </span>
                   <div className="flex items-center gap-1">
-                    <Mic className="h-3 w-3 text-green-500" />
-                    <VolumeIcon className={cn("h-3 w-3", volumeInfo.color)} />
+                    {isMuted ? (
+                      <MicOff className="h-3.5 w-3.5 text-red-500" />
+                    ) : (
+                      <Mic className="h-3.5 w-3.5 text-green-500" />
+                    )}
+                    <VolumeIcon className={cn("h-3.5 w-3.5", volumeInfo.color)} />
                   </div>
                 </div>
               </TooltipTrigger>
               <TooltipContent side="right">
                 <div className="text-center">
                   <p className="font-medium">{participant.name}</p>
-                  <p className="text-xs text-muted-foreground">
-                    Volume: {volumeInfo.tooltip}
-                  </p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Click to adjust volume
-                  </p>
+                  <p className="text-xs text-muted-foreground">Volume: {volumeInfo.tooltip}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Click to adjust volume</p>
                 </div>
               </TooltipContent>
             </Tooltip>
