@@ -40,3 +40,14 @@ export const emitMessageDelete = (chatId: string, messageId: string) => {
     console.log("⚠️ Socket instance not available for message deletion");
   }
 };
+
+// ===== Server Members Events =====
+export const emitServerMembersUpdated = (serverId: string) => {
+  const io = getSocketIO();
+  if (io) {
+    io.emit("server-members-updated", { serverId });
+    console.log(`👥 Emitted server members updated for server:${serverId}`);
+  } else {
+    console.log("⚠️ Socket instance not available for server members update");
+  }
+};

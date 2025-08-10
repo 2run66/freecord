@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { UserAvatar } from "@/components/user-avatar";
 import { useModal } from "@/hooks/use-modal-store";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useSocket } from "@/components/providers/socket-provider";
 
 type MemberRole = "ADMIN" | "MODERATOR" | "GUEST";
 
@@ -42,6 +43,7 @@ export function ChannelMemberSidebar({ serverId }: ChannelMemberSidebarProps) {
   const [loading, setLoading] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const { onOpen } = useModal();
+  const { socket } = useSocket();
 
   useEffect(() => {
     let isCancelled = false;
@@ -64,6 +66,31 @@ export function ChannelMemberSidebar({ serverId }: ChannelMemberSidebarProps) {
       isCancelled = true;
     };
   }, [serverId]);
+
+  // Listen for server members updates and refetch
+  useEffect(() => {
+    if (!socket) return;
+    const handler = (payload: { serverId: string }) => {
+      if (payload?.serverId === serverId) {
+        // Re-fetch members
+        (async () => {
+          try {
+            const res = await fetch(`/api/servers/${serverId}/members`);
+            if (res.ok) {
+              const data: ServerMember[] = await res.json();
+              setMembers(data);
+            }
+          } catch (err) {
+            console.log("Error refreshing members:", err);
+          }
+        })();
+      }
+    };
+    socket.on("server-members-updated", handler);
+    return () => {
+      socket.off("server-members-updated", handler);
+    };
+  }, [socket, serverId]);
 
   const membersByRole = useMemo(() => {
     const grouped: Record<MemberRole, ServerMember[]> = {

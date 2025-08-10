@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { currentProfile } from "@/lib/current-profile";
 import { db } from "@/lib/db";
 import { MemberRole } from "@prisma/client";
+import { emitServerMembersUpdated } from "@/lib/socket-emit";
 
 export async function GET(
   req: NextRequest,
@@ -89,6 +90,8 @@ export async function PATCH(
       }
     });
 
+    // Notify clients
+    emitServerMembersUpdated(serverId);
     return NextResponse.json(updatedMember);
   } catch (error) {
     console.log("[MEMBER_ROLE_UPDATE]", error);
@@ -141,7 +144,8 @@ export async function DELETE(
         serverId: serverId,
       }
     });
-
+    // Notify clients
+    emitServerMembersUpdated(serverId);
     return new NextResponse("Member removed", { status: 200 });
   } catch (error) {
     console.log("[MEMBER_KICK]", error);

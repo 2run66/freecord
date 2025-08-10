@@ -13,7 +13,7 @@ interface FriendUser {
 }
 
 export const FriendsModal = () => {
-  const { isOpen, type, onClose } = useModal();
+  const { isOpen, type, onClose, onOpen } = useModal();
   const isModalOpen = isOpen && type === "friends";
 
   const [friends, setFriends] = useState<FriendUser[]>([]);
@@ -46,9 +46,21 @@ export const FriendsModal = () => {
           <div className="space-y-2 max-h-[60vh] overflow-y-auto">
             {friends.map((u) => (
               <div key={u.id} className="flex items-center gap-3 border border-border rounded-md p-2">
-                <UserAvatar src={u.avatar || undefined} name={u.name} />
+                <button
+                  type="button"
+                  onClick={() => onOpen("userPublic", { user: { id: u.id, name: u.name, email: u.email, avatar: u.avatar || undefined } })}
+                  className="cursor-pointer hover:opacity-90 transition"
+                >
+                  <UserAvatar src={u.avatar || undefined} name={u.name} />
+                </button>
                 <div className="min-w-0">
-                  <div className="font-medium truncate">{u.name}</div>
+                  <button
+                    type="button"
+                    onClick={() => onOpen("userPublic", { user: { id: u.id, name: u.name, email: u.email, avatar: u.avatar || undefined } })}
+                    className="font-medium truncate text-left hover:underline"
+                  >
+                    {u.name}
+                  </button>
                   <div className="text-sm text-muted-foreground truncate">{u.email}</div>
                 </div>
               </div>

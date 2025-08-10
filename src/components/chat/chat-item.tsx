@@ -103,12 +103,26 @@ export const ChatItem = ({
   const isAudio = fileUrl && ["mp3", "wav", "ogg", "m4a", "flac"].includes(fileType || "");
   const isOtherFile = fileUrl && !isImage && !isPDF && !isDocument && !isSpreadsheet && !isArchive && !isVideo && !isAudio;
 
+  const openUserPublic = () => {
+    onOpen("userPublic", {
+      user: {
+        id: user.id,
+        name: user.name,
+        email: (user as any).email,
+        avatar: (user as any).avatar || undefined,
+      },
+    });
+  };
+
   return (
     <div className="relative group flex items-center hover:bg-black/5 p-4 transition w-full">
       <div className="group flex gap-x-2 items-start w-full">
-        <div className="cursor-pointer hover:drop-shadow-md transition">
+        <div
+          className="cursor-pointer hover:drop-shadow-md transition"
+          onClick={openUserPublic}
+        >
           <UserAvatar
-            src={user.avatar || undefined}
+            src={(user as any).avatar || undefined}
             name={user.name || "User"}
             showStatus={true}
             isOnline={isUserOnline}
@@ -118,7 +132,10 @@ export const ChatItem = ({
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
             <div className="flex items-center">
-              <p className="font-semibold text-sm hover:underline cursor-pointer">
+              <p
+                className="font-semibold text-sm hover:underline cursor-pointer"
+                onClick={openUserPublic}
+              >
                 {user.name}
               </p>
               {/* We'll add role icons later */}
