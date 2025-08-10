@@ -281,7 +281,7 @@ export const ChatItem = ({
           {canEditMessage && (
             <button
               onClick={() => onOpen("editMessage", {
-                apiUrl: `${socketUrl}/${id}`,
+                apiUrl: `${socketUrl}`,
                 query: socketQuery,
                 message: { id, content }
               })}

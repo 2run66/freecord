@@ -202,7 +202,8 @@ export async function PATCH(
         id: messageId,
       },
       data: {
-        content,
+      content,
+      isEdited: true,
       },
       include: {
         user: true,

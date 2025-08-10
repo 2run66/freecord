@@ -132,7 +132,7 @@ export const ChatMessages = ({
                 fileUrl={message.fileUrl}
                 deleted={message.deleted}
                 timestamp={format(new Date(message.createdAt), DATE_FORMAT)}
-                isUpdated={message.updatedAt !== message.createdAt}
+                isUpdated={Boolean((message as any).isEdited)}
                 socketUrl={socketUrl}
                 socketQuery={socketQuery}
                 currentUserId={user.id}

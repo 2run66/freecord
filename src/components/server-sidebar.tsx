@@ -45,8 +45,8 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
 
   return (
     <div
-      className={`relative bg-zinc-900 flex flex-col items-center py-3 space-y-2 transition-[width] duration-200 ${
-        isCollapsed ? "w-3" : "w-[72px]"
+      className={`relative bg-zinc-900 flex flex-col items-center py-3 space-y-2 transition-[width] duration-200 overflow-visible z-0 ${
+        isCollapsed ? "w-8" : "w-[72px]"
       }`}
     >
       {/* Collapse/Expand handle */}
@@ -54,7 +54,7 @@ export const ServerSidebar = ({ servers, currentServerId }: ServerSidebarProps) 
         type="button"
         aria-label={isCollapsed ? "Expand server sidebar" : "Collapse server sidebar"}
         onClick={() => setIsCollapsed((v) => !v)}
-        className={`absolute top-4 ${isCollapsed ? "-right-3" : "-right-3"} z-10 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 p-1 shadow`}
+        className={`absolute top-1/2 -translate-y-1/2 -right-3 z-10 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 p-1 shadow`}
       >
         {isCollapsed ? (
           <ChevronRight className="w-4 h-4 text-zinc-300" />

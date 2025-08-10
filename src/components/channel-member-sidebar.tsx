@@ -42,6 +42,7 @@ export function ChannelMemberSidebar({ serverId }: ChannelMemberSidebarProps) {
   const [members, setMembers] = useState<ServerMember[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [showContent, setShowContent] = useState<boolean>(true);
   const { onOpen } = useModal();
   const { socket } = useSocket();
 
@@ -92,6 +93,16 @@ export function ChannelMemberSidebar({ serverId }: ChannelMemberSidebarProps) {
     };
   }, [socket, serverId]);
 
+  // Delay mounting content until expand animation finishes
+  useEffect(() => {
+    if (isCollapsed) {
+      setShowContent(false);
+      return;
+    }
+    const timer = setTimeout(() => setShowContent(true), 220); // match transition duration-200
+    return () => clearTimeout(timer);
+  }, [isCollapsed]);
+
   const membersByRole = useMemo(() => {
     const grouped: Record<MemberRole, ServerMember[]> = {
       ADMIN: [],
@@ -106,15 +117,15 @@ export function ChannelMemberSidebar({ serverId }: ChannelMemberSidebarProps) {
 
   return (
     <div
-      className={`relative bg-card border-l border-border flex flex-col transition-[width] duration-200 ${
-        isCollapsed ? "w-3" : "w-60"
+      className={`relative bg-card border-l border-border flex flex-col transition-[width] duration-200 overflow-visible shrink-0 z-0 ${
+        isCollapsed ? "w-8" : "w-60"
       }`}
     >
       <button
         type="button"
         aria-label={isCollapsed ? "Expand members sidebar" : "Collapse members sidebar"}
         onClick={() => setIsCollapsed((v) => !v)}
-        className={`absolute top-4 -left-3 z-10 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 p-1 shadow`}
+        className={`absolute top-1/2 -translate-y-1/2 -left-3 z-10 rounded-full bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 p-1 shadow`}
       >
         {isCollapsed ? (
           <ChevronLeft className="w-4 h-4 text-zinc-300" />
@@ -123,7 +134,7 @@ export function ChannelMemberSidebar({ serverId }: ChannelMemberSidebarProps) {
         )}
       </button>
 
-      {isCollapsed ? null : (
+      {showContent ? (
         <>
           <div className="h-12 border-b border-border flex items-center px-4 font-semibold">
             Members {loading ? "" : `(${members.length})`}
@@ -193,7 +204,7 @@ export function ChannelMemberSidebar({ serverId }: ChannelMemberSidebarProps) {
             })}
           </div>
         </>
-      )}
+      ) : null}
     </div>
   );
 }

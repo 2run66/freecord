@@ -90,6 +90,7 @@ model Message {
   id      String  @id @default(cuid())
   content String
   fileUrl String?
+  isEdited Boolean @default(false)
 
   channelId String
   channel   Channel @relation(fields: [channelId], references: [id], onDelete: Cascade)
