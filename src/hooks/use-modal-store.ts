@@ -1,8 +1,9 @@
 "use client";
 
 import { create } from "zustand";
+import { ChannelType } from "@prisma/client";
 
-export type ModalType = "messageFile" | "createChannel" | "editChannel" | "editMessage" | "deleteMessage" | "createDM" | "serverDiscovery" | "joinServer" | "userSettings" | "serverSettings" | "createServer" | "participantVolume";
+export type ModalType = "messageFile" | "createChannel" | "editChannel" | "editMessage" | "deleteMessage" | "createDM" | "serverDiscovery" | "joinServer" | "userSettings" | "serverSettings" | "createServer" | "participantVolume" | "userPublic" | "friends" | "notifications";
 
 interface ModalData {
   apiUrl?: string;
@@ -11,6 +12,8 @@ interface ModalData {
   server?: any;
   channel?: any;
   participant?: any;
+  user?: any;
+  channelType?: ChannelType;
 }
 
 interface ModalStore {

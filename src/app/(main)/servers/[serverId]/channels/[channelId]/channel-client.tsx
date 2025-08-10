@@ -23,8 +23,10 @@ import { useAudioControls } from "@/hooks/use-audio-controls";
 import { UserAvatar } from "@/components/user-avatar";
 import { DMSection } from "@/components/sidebar/dm-section";
 import { ServerSidebar } from "@/components/server-sidebar";
+import { ChannelMemberSidebar } from "@/components/channel-member-sidebar";
 import { ChannelItem } from "@/components/channel-item";
 import type { User, Channel } from "@prisma/client";
+import { ChannelType } from "@prisma/client";
 import { useState, useEffect, useCallback } from "react";
 import { useClerk } from "@clerk/nextjs";
 
@@ -143,9 +145,10 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 flex items-center justify-between">
               Text Channels
               <Plus 
-                onClick={() => onOpen("createChannel", { server: serverDetails })}
+                onClick={() => onOpen("createChannel", { server: serverDetails, channelType: ChannelType.TEXT })}
                 className="w-4 h-4 hover:text-foreground cursor-pointer" 
               />
+              
             </h3>
             <div className="space-y-0.5">
               {textChannels.map((ch) => (
@@ -164,7 +167,7 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-2 px-2 flex items-center justify-between">
               Voice Channels
               <Plus 
-                onClick={() => onOpen("createChannel", { server: serverDetails })}
+                onClick={() => onOpen("createChannel", { server: serverDetails, channelType: ChannelType.VOICE })}
                 className="w-4 h-4 hover:text-foreground cursor-pointer" 
               />
             </h3>
@@ -344,6 +347,9 @@ const ChannelPageClient = ({ channel, profile, serverId }: ChannelPageClientProp
           />
         )}
       </div>
+
+      {/* Right-side Members Sidebar */}
+      <ChannelMemberSidebar serverId={serverId} />
     </div>
   );
 }

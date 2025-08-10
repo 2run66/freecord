@@ -63,11 +63,11 @@ export const ParticipantVolumeModal = () => {
     setIsMuted(false);
   };
 
-  const getVolumeColor = () => {
-    if (isMuted || volume === 0) return "text-red-500";
-    if (volume < 50) return "text-yellow-500";
-    if (volume > 150) return "text-orange-500";
-    return "text-green-500";
+  const getVolumeBadgeClass = () => {
+    if (isMuted || volume === 0) return "bg-red-500/15 text-red-500 border border-red-500/30";
+    if (volume < 50) return "bg-yellow-500/15 text-yellow-500 border border-yellow-500/30";
+    if (volume > 150) return "bg-orange-500/15 text-orange-500 border border-orange-500/30";
+    return "bg-green-500/15 text-green-500 border border-green-500/30";
   };
 
   const getVolumeDescription = () => {
@@ -111,19 +111,21 @@ export const ParticipantVolumeModal = () => {
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <Label className="text-sm font-medium">Volume Level</Label>
-              <div className={`flex items-center space-x-2 ${getVolumeColor()}`}>
-                {isMuted ? (
-                  <VolumeX className="h-4 w-4" />
-                ) : (
-                  <Volume2 className="h-4 w-4" />
-                )}
-                <span className="font-mono text-sm min-w-[3rem] text-right">
+              <div className={`flex items-center gap-2 px-2.5 py-1 rounded-full ${getVolumeBadgeClass()}`}>
+                <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-current/20">
+                  {isMuted ? (
+                    <VolumeX className="h-3.5 w-3.5" />
+                  ) : (
+                    <Volume2 className="h-3.5 w-3.5" />
+                  )}
+                </span>
+                <span className="font-mono text-xs min-w-[3rem] text-right">
                   {volume}%
                 </span>
               </div>
             </div>
 
-            {/* Volume Slider */}
+            {/* Volume Slider with Checkpoint Presets Aligned Below */}
             <div className="space-y-2">
               <input
                 type="range"
@@ -132,12 +134,32 @@ export const ParticipantVolumeModal = () => {
                 step="5"
                 value={volume}
                 onChange={(e) => handleVolumeChange(parseInt(e.target.value))}
-                className="w-full slider"
+                className="slider w-full"
               />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0%</span>
-                <span>100%</span>
-                <span>200%</span>
+              <div className="relative h-9">
+                <div className="absolute top-0 left-[15px] right-[15px] h-9">
+                  {[25, 50, 100, 150].map((preset) => {
+                    const leftPercent = (preset / 200) * 100;
+                    const isActive = volume === preset;
+                    return (
+                      <button
+                        key={preset}
+                        type="button"
+                        aria-label={`Set volume to ${preset}%`}
+                        onClick={() => handleVolumeChange(preset)}
+                        aria-pressed={isActive}
+                        className={`absolute -translate-x-1/2 top-0 focus:outline-none rounded-full border px-2 py-0.5 text-[10px] leading-none transition-colors ${
+                          isActive
+                            ? "bg-primary text-primary-foreground border-primary shadow"
+                            : "bg-muted/50 text-muted-foreground border-border hover:bg-primary/10"
+                        }`}
+                        style={{ left: `${leftPercent}%` }}
+                      >
+                        {preset}%
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 
@@ -173,20 +195,7 @@ export const ParticipantVolumeModal = () => {
               </Button>
             </div>
 
-            {/* Volume Presets */}
-            <div className="grid grid-cols-4 gap-2">
-              {[25, 50, 100, 150].map((preset) => (
-                <Button
-                  key={preset}
-                  variant={volume === preset ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => handleVolumeChange(preset)}
-                  className="text-xs"
-                >
-                  {preset}%
-                </Button>
-              ))}
-            </div>
+            {/* Removed separate presets grid; presets are inline with slider above */}
           </div>
 
           {/* Info */}

@@ -62,10 +62,16 @@ export const CreateChannelModal = () => {
   });
 
   useEffect(() => {
+    if (isModalOpen) {
+      form.setValue("type", (data?.channelType ?? ChannelType.TEXT) as ChannelType);
+    }
+  }, [isModalOpen, data?.channelType, form]);
+
+  useEffect(() => {
     if (form.watch("type") === ChannelType.TEXT) {
       form.setValue("name", "");
     }
-  }, [form.watch("type")]);
+  }, [form]);
 
   const isLoading = form.formState.isSubmitting;
 
@@ -144,7 +150,7 @@ export const CreateChannelModal = () => {
                     <Select
                       disabled={isLoading}
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger className="bg-input border-border focus:ring-2 focus:ring-ring text-foreground">

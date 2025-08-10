@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { LiveKitRoom, VideoConference } from "@livekit/components-react";
+import { LiveKitRoom, VideoConference, useLocalParticipant } from "@livekit/components-react";
 import "@livekit/components-styles";
 import { Loader2 } from "lucide-react";
+import { useAudio } from "@/components/providers/audio-provider";
 
 interface MediaRoomProps {
   chatId: string;
@@ -19,6 +20,12 @@ export const MediaRoom = ({
 }: MediaRoomProps) => {
   const { user } = useUser();
   const [token, setToken] = useState("");
+  const { audioSettings } = useAudio();
+
+  // Respect app-level mute for initial publish
+  const shouldPublishAudio = useMemo(() => {
+    return audio && !audioSettings.microphoneMuted;
+  }, [audio, audioSettings.microphoneMuted]);
 
   useEffect(() => {
     if (!user) return;
@@ -76,6 +83,20 @@ export const MediaRoom = ({
     )
   }
 
+  // Component rendered within LiveKit context to sync microphone state
+  const MicSync = ({ muted }: { muted: boolean }) => {
+    const { localParticipant } = useLocalParticipant();
+    useEffect(() => {
+      if (!localParticipant) return;
+      try {
+        localParticipant.setMicrophoneEnabled(!muted);
+      } catch (e) {
+        console.log("Failed to update LiveKit microphone state:", e);
+      }
+    }, [localParticipant, muted]);
+    return null;
+  };
+
   const handleConnected = () => {
     console.log(`Connected to LiveKit room: ${chatId}`);
     // Trigger a global refresh of participant lists
@@ -99,10 +120,11 @@ export const MediaRoom = ({
       token={token}
       connect={true}
       video={video}
-      audio={audio}
+      audio={shouldPublishAudio}
       onConnected={handleConnected}
       onDisconnected={handleDisconnected}
     >
+      <MicSync muted={audioSettings.microphoneMuted} />
       <VideoConference />
     </LiveKitRoom>
   )

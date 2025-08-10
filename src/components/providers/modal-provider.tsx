@@ -15,6 +15,9 @@ import { UserSettingsModal } from "@/components/modals/user-settings-modal";
 import { ServerSettingsModal } from "@/components/modals/server-settings-modal";
 import { InitialModal } from "@/components/modals/initial-modal";
 import { ParticipantVolumeModal } from "@/components/modals/participant-volume-modal";
+import { UserPublicModal } from "@/components/modals/user-public-modal";
+import { FriendsModal } from "@/components/modals/friends-modal";
+import { NotificationsModal } from "@/components/modals/notifications-modal";
 
 export const ModalProvider = () => {
   const [isMounted, setIsMounted] = useState(false);
@@ -46,6 +49,9 @@ export const ModalProvider = () => {
       <UserSettingsModal />
       <ServerSettingsModal />
       <ParticipantVolumeModal />
+      <UserPublicModal />
+      <FriendsModal />
+      <NotificationsModal />
       <InitialModal autoOpen={false} />
     </>
   );

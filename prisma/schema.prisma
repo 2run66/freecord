@@ -23,6 +23,13 @@ model User {
   createdChannels Channel[]
   voiceChannelSessions VoiceChannelParticipant[]
 
+  // Relations (optional back-relations)
+  // friend requests
+  sentFriendRequests     FriendRequest[] @relation("SentFriendRequests")
+  receivedFriendRequests FriendRequest[] @relation("ReceivedFriendRequests")
+  friendshipsA           Friendship[]     @relation("FriendshipA")
+  friendshipsB           Friendship[]     @relation("FriendshipB")
+
   @@map("users")
 }
 
@@ -126,4 +133,40 @@ model VoiceChannelParticipant {
 
   @@unique([userId, channelId])
   @@map("voice_channel_participants")
+}
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model FriendRequest {
+  id          String               @id @default(cuid())
+  fromUserId  String
+  fromUser    User                 @relation("SentFriendRequests", fields: [fromUserId], references: [id], onDelete: Cascade)
+  toUserId    String
+  toUser      User                 @relation("ReceivedFriendRequests", fields: [toUserId], references: [id], onDelete: Cascade)
+  status      FriendRequestStatus  @default(PENDING)
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+
+  @@unique([fromUserId, toUserId])
+  @@index([toUserId])
+  @@index([fromUserId])
+  @@map("friend_requests")
+}
+
+model Friendship {
+  id        String  @id @default(cuid())
+  userAId   String
+  userA     User    @relation("FriendshipA", fields: [userAId], references: [id], onDelete: Cascade)
+  userBId   String
+  userB     User    @relation("FriendshipB", fields: [userBId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userAId, userBId])
+  @@index([userAId])
+  @@index([userBId])
+  @@map("friendships")
 }
