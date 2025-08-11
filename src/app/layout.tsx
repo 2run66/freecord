@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Freecord",
+  title: "Miyov",
   description: "A modern Discord-like communication platform with voice, video, and text messaging",
   keywords: ["chat", "voice chat", "video calls", "discord", "communication", "real-time"],
   authors: [{ name: "Yasin Turanocal" }],
