@@ -32,14 +32,14 @@ export async function POST(
       return NextResponse.json(existing);
     }
 
-    // Ensure LiveKit room exists
+    // Ensure LiveKit room exists  
     const apiKey = process.env.LIVEKIT_API_KEY;
     const apiSecret = process.env.LIVEKIT_API_SECRET;
-    const wsUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
-
-    if (apiKey && apiSecret && wsUrl) {
+    
+    if (apiKey && apiSecret) {
       try {
-        const roomService = new RoomServiceClient(wsUrl, apiKey, apiSecret);
+        // LiveKit runs in the same Docker network - accessible via container name
+        const roomService = new RoomServiceClient("http://livekit:7880", apiKey, apiSecret);
         // Create room if it doesn't exist (this is idempotent)
         await roomService.createRoom({
           name: channelId,

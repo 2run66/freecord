@@ -1,0 +1,18 @@
+# LiveKit configuration - git safe (no credentials)
+# Keys are provided via LIVEKIT_KEYS environment variable
+port: 7880
+
+rtc:
+  tcp_port: 7881
+  port_range_start: 50000
+  port_range_end: 50100
+  use_external_ip: true
+
+room:
+  enabled_codecs:
+    - mime: audio/opus
+    - mime: video/h264
+    - mime: video/vp8
+
+logging:
+  level: info

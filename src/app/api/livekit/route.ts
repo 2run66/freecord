@@ -32,9 +32,8 @@ export async function POST(req: NextRequest) {
 
     const apiKey = process.env.LIVEKIT_API_KEY;
     const apiSecret = process.env.LIVEKIT_API_SECRET;
-    const wsUrl = process.env.NEXT_PUBLIC_LIVEKIT_URL;
 
-    if (!apiKey || !apiSecret || !wsUrl) {
+    if (!apiKey || !apiSecret) {
       return NextResponse.json(
         { error: "Server misconfigured" },
         { status: 500 }
