@@ -14,7 +14,9 @@ const nextConfig: NextConfig = {
     "192.168.1.85:3000",
     "192.168.1.85:3001",
     "localhost:3000",
-    "127.0.0.1:3000"
+    "127.0.0.1:3000",
+    "dev.miyov.io",
+    "dev.miyov.io:3001"
   ],
 };
 
