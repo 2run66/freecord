@@ -44,7 +44,7 @@ services:
     ports:
       - "17880:7880"    # HTTP API (dev external)
       - "17881:7881"    # RTC TCP (dev external)
-      - "150000-150100:50000-50100/udp" # RTC UDP (dev external)
+      - "51000-51100:50000-50100/udp" # RTC UDP (dev external, non-overlapping)
     volumes:
       - ./livekit.dev.yaml:/etc/livekit.yaml:ro
     environment:
