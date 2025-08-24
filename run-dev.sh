@@ -49,13 +49,19 @@ EOF
   echo "Created .env.dev. Review and fill missing values if needed."
 fi
 
-echo "Starting Freecord DEV stack (docker-compose.dev.yml) ..."
-# Use .env.dev for variable interpolation (build args) and runtime env_file
-$compose_cmd --env-file .env.dev -f docker-compose.dev.yml up -d --build
+PROFILE_ARG=${1:-}
+
+if [ "$PROFILE_ARG" = "with-livekit" ]; then
+  echo "Starting Freecord DEV stack including LiveKit (profile: livekit) ..."
+  $compose_cmd --env-file .env.dev -f docker-compose.dev.yml --profile livekit up -d --build
+else
+  echo "Starting Freecord DEV stack (without LiveKit service) ..."
+  $compose_cmd --env-file .env.dev -f docker-compose.dev.yml up -d --build
+fi
 
 echo "DEV stack is up. Useful endpoints:"
 echo "- App:            http://localhost:3001 (or https://dev.miyov.io via your DNS/proxy)"
-echo "- LiveKit API:    http://localhost:17880 (external)"
+echo "- LiveKit API:    http://localhost:17880 (if started with with-livekit)"
 echo "- Postgres:       localhost:55432"
 echo "- Redis:          localhost:26379"
 

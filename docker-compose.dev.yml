@@ -36,39 +36,24 @@ services:
     networks:
       - freecord-dev-network
 
-  livekit:
-    image: livekit/livekit-server:latest
-    container_name: freecord-dev-livekit
-    command: --config /etc/livekit.yaml
-    restart: unless-stopped
-    ports:
-      - "17880:7880"    # HTTP API (dev external)
-      - "17881:7881"    # RTC TCP (dev external)
-      - "51000-51100:50000-50100/udp" # RTC UDP (dev external, non-overlapping)
-    volumes:
-      - ./livekit.dev.yaml:/etc/livekit.yaml:ro
-    environment:
-      LIVEKIT_KEYS: "${DEV_LIVEKIT_API_KEY}: ${DEV_LIVEKIT_API_SECRET}"
-    networks:
-      - freecord-dev-network
 
   app:
     build:
       context: .
       dockerfile: Dockerfile
       args:
-        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${DEV_NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
+        NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${DEV_NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:-pk_test_dev_placeholder}
         NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
         NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
         NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /
         NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /
-        NEXT_PUBLIC_LIVEKIT_URL: ${DEV_NEXT_PUBLIC_LIVEKIT_URL}
+        NEXT_PUBLIC_LIVEKIT_URL: ${DEV_NEXT_PUBLIC_LIVEKIT_URL:-wss://freecord-b1rt90r2.livekit.cloud}
     container_name: freecord-dev-app
     env_file:
       - .env.dev
     environment:
       DATABASE_URL: ${DEV_DATABASE_URL:-postgresql://freecord_user:freecord_password@postgres:5432/freecord_dev}
-      NODE_ENV: development
+      NODE_ENV: production
       PORT: 3001
       HOSTNAME: 0.0.0.0
 
@@ -81,7 +66,8 @@ services:
 
       LIVEKIT_API_KEY: ${DEV_LIVEKIT_API_KEY}
       LIVEKIT_API_SECRET: ${DEV_LIVEKIT_API_SECRET}
-      NEXT_PUBLIC_LIVEKIT_URL: ${DEV_NEXT_PUBLIC_LIVEKIT_URL}
+      NEXT_PUBLIC_LIVEKIT_URL: ${DEV_NEXT_PUBLIC_LIVEKIT_URL:-wss://freecord-b1rt90r2.livekit.cloud}
+      LIVEKIT_SERVER_URL: ${DEV_LIVEKIT_SERVER_URL:-https://freecord-b1rt90r2.livekit.cloud}
 
       REDIS_URL: ${DEV_REDIS_URL:-redis://redis:6379}
     ports:
@@ -91,8 +77,6 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-      livekit:
-        condition: service_started
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:3001/api/health"]
       interval: 30s

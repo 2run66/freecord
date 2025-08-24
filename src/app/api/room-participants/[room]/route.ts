@@ -28,8 +28,9 @@ export async function GET(
       );
     }
 
-    // LiveKit runs in the same Docker network - accessible via container name
-    const roomService = new RoomServiceClient("http://livekit:7880", apiKey, apiSecret);
+    // Use configured LiveKit server URL; default to local self-hosted when not provided
+    const serverUrl = process.env.LIVEKIT_SERVER_URL || "http://livekit:7880";
+    const roomService = new RoomServiceClient(serverUrl, apiKey, apiSecret);
     
     try {
       const participants = await roomService.listParticipants(room);

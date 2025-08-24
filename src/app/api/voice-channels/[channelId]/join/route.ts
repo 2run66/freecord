@@ -38,8 +38,9 @@ export async function POST(
     
     if (apiKey && apiSecret) {
       try {
-        // LiveKit runs in the same Docker network - accessible via container name
-        const roomService = new RoomServiceClient("http://livekit:7880", apiKey, apiSecret);
+        // Use configured LiveKit server URL; default to local self-hosted when not provided
+        const serverUrl = process.env.LIVEKIT_SERVER_URL || "http://livekit:7880";
+        const roomService = new RoomServiceClient(serverUrl, apiKey, apiSecret);
         // Create room if it doesn't exist (this is idempotent)
         await roomService.createRoom({
           name: channelId,
