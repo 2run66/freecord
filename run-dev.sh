@@ -50,7 +50,8 @@ EOF
 fi
 
 echo "Starting Freecord DEV stack (docker-compose.dev.yml) ..."
-$compose_cmd -f docker-compose.dev.yml up -d --build
+# Use .env.dev for variable interpolation (build args) and runtime env_file
+$compose_cmd --env-file .env.dev -f docker-compose.dev.yml up -d --build
 
 echo "DEV stack is up. Useful endpoints:"
 echo "- App:            http://localhost:3001 (or https://dev.miyov.io via your DNS/proxy)"
